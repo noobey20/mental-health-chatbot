@@ -1,88 +1,50 @@
-<<<<<<< HEAD
 import streamlit as st
 
-st.set_page_config(page_title="Mental Health Companion", page_icon="💛")
+st.set_page_config(page_title="Mental Health Companion Chatbot", page_icon="💛")
 
-st.title("💛 Mental Health Companion Chatbot")
+st.markdown(
+    "<h1 style='text-align: center; color: white;'>💛 Mental Health Companion Chatbot</h1>",
+    unsafe_allow_html=True,
+)
+
+st.write("")
 st.write("A supportive, safe chatbot for student emotional well-being.")
 
-if "chat" not in st.session_state:
-    st.session_state.chat = []
-
+# Emotion detection
 def detect_emotion(text):
-    t = text.lower()
-    if any(w in t for w in ["sad", "hurt", "lonely", "upset"]):
+    text = text.lower()
+    if any(word in text for word in ["sad", "upset", "depressed", "cry"]):
         return "sad"
-    if any(w in t for w in ["stressed", "anxious", "tense"]):
-        return "stressed"
-    if any(w in t for w in ["happy", "good", "great"]):
+    elif any(word in text for word in ["stress", "stressed", "tired", "pressure"]):
+        return "stress"
+    elif any(word in text for word in ["angry", "mad", "frustrated"]):
+        return "anger"
+    elif any(word in text for word in ["happy", "good", "great", "excited"]):
         return "happy"
-    return "neutral"
+    else:
+        return "neutral"
 
-def reply(emotion):
-    if emotion == "happy":
-        return "That's nice to hear. Keep going 😊"
+# Response generation
+def generate_response(emotion):
     if emotion == "sad":
-        return "I'm here with you. You can share what's on your mind."
-    if emotion == "stressed":
-        return "Take a slow breath. Things will settle. I'm here for you."
-    return "I understand. Tell me more."
+        return "I'm really sorry you're feeling this way… you're not alone. I'm here for you. 💛"
+    elif emotion == "stress":
+        return "It sounds like things are overwhelming… Take a deep breath. You're doing your best. 💛"
+    elif emotion == "anger":
+        return "It's okay to feel angry. Your feelings matter, and it's safe to express them here. 💛"
+    elif emotion == "happy":
+        return "That's wonderful! I'm glad you're feeling good today. Keep smiling! 😊"
+    else:
+        return "I understand… you can share anything with me. I'm here to listen. 💛"
 
-for m in st.session_state.chat:
-    st.chat_message(m["role"]).markdown(m["text"])
+# Chat interface
+user_input = st.text_input("How are you feeling today?")
 
-user = st.chat_input("How are you feeling today?")
+if user_input:
+    st.write(f"**You:** {user_input}")
 
-if user:
-    st.session_state.chat.append({"role": "user", "text": user})
-    st.chat_message("user").markdown(user)
+    emotion = detect_emotion(user_input)
+    st.write(f"**Emotion Detected:** `{emotion}`")
 
-    mood = detect_emotion(user)
-    bot = f"Emotion Detected: {mood}\n\n" + reply(mood)
-
-    st.chat_message("assistant").markdown(bot)
-=======
-import streamlit as st
-
-st.set_page_config(page_title="Mental Health Companion", page_icon="💛")
-
-st.title("💛 Mental Health Companion Chatbot")
-st.write("A supportive, safe chatbot for student emotional well-being.")
-
-if "chat" not in st.session_state:
-    st.session_state.chat = []
-
-def detect_emotion(text):
-    t = text.lower()
-    if any(w in t for w in ["sad", "hurt", "lonely", "upset"]):
-        return "sad"
-    if any(w in t for w in ["stressed", "anxious", "tense"]):
-        return "stressed"
-    if any(w in t for w in ["happy", "good", "great"]):
-        return "happy"
-    return "neutral"
-
-def reply(emotion):
-    if emotion == "happy":
-        return "That's nice to hear. Keep going 😊"
-    if emotion == "sad":
-        return "I'm here with you. You can share what's on your mind."
-    if emotion == "stressed":
-        return "Take a slow breath. Things will settle. I'm here for you."
-    return "I understand. Tell me more."
-
-for m in st.session_state.chat:
-    st.chat_message(m["role"]).markdown(m["text"])
-
-user = st.chat_input("How are you feeling today?")
-
-if user:
-    st.session_state.chat.append({"role": "user", "text": user})
-    st.chat_message("user").markdown(user)
-
-    mood = detect_emotion(user)
-    bot = f"Emotion Detected: {mood}\n\n" + reply(mood)
-
-    st.chat_message("assistant").markdown(bot)
->>>>>>> f7091469130573e1fda2a3766ee2ce35af00b305
-    st.session_state.chat.append({"role": "assistant", "text": bot})
+    reply = generate_response(emotion)
+    st.write(f"**Chatbot:** {reply}")
